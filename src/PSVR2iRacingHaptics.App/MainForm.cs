@@ -8,6 +8,14 @@ namespace PSVR2iRacingHaptics.App;
 
 public sealed class MainForm : Form
 {
+    private const int NavWidth = 216;
+    private const int NavItemWidth = 184;
+    private static readonly Color NavBackColor = Color.FromArgb(26, 34, 48);
+    private static readonly Color NavHoverColor = Color.FromArgb(41, 52, 70);
+    private static readonly Color NavSelectedColor = Color.FromArgb(38, 92, 154);
+    private static readonly Color NavGroupForeColor = Color.FromArgb(129, 143, 162);
+    private static readonly Color NavItemForeColor = Color.FromArgb(206, 214, 226);
+
     private readonly AppCoordinator _coordinator;
     private readonly Dictionary<string, Label> _stateValues = new();
     private readonly Dictionary<string, Label> _diagnosticValues = new();
@@ -128,6 +136,11 @@ public sealed class MainForm : Form
         "Check GitHub for a newer release at startup");
     private readonly Label _updateStatus = StatusLabel("Update check has not run.");
     private readonly NotifyIcon _notifyIcon = new();
+    private readonly FlowLayoutPanel _navList = new();
+    private readonly Panel _pageHost = new();
+    private readonly List<Button> _navButtons = [];
+    private Label? _bannerText;
+    private Button? _stopButton;
     private readonly CheckBox _autoProfileSelection = Check(
         "Automatically select profiles using iRacing car and track identity");
     private readonly Label _detectedCar = StatusLabel("Waiting for iRacing");
@@ -153,8 +166,10 @@ public sealed class MainForm : Form
     {
         _coordinator = coordinator;
         Text = $"Nishizumi PSVR2 iRacing Haptics {Application.ProductVersion}";
-        MinimumSize = new Size(950, 700);
-        Size = new Size(1160, 820);
+        // The navigation rail takes horizontal room the old tab strip did not,
+        // so the minimum width covers it on top of the widest settings grid.
+        MinimumSize = new Size(1180, 720);
+        Size = new Size(1280, 860);
         StartPosition = FormStartPosition.CenterScreen;
         Font = new Font("Segoe UI", 9.5f);
         AutoScaleMode = AutoScaleMode.Dpi;
@@ -169,6 +184,22 @@ public sealed class MainForm : Form
         Shown += OnShownAsync;
         FormClosing += OnFormClosingAsync;
         Resize += OnWindowResized;
+        Resize += (_, _) => ReflowBanner();
+        ReflowBanner();
+    }
+
+    /// <summary>
+    /// Wraps the safety banner against the width left over once the emergency
+    /// button has its share, so the button can never be clipped off the edge.
+    /// </summary>
+    private void ReflowBanner()
+    {
+        if (_bannerText is null || _stopButton is null)
+        {
+            return;
+        }
+        var available = ClientSize.Width - _stopButton.Width - 90;
+        _bannerText.MaximumSize = new Size(Math.Max(240, available), 0);
     }
 
     private Control BuildLayout()
@@ -185,31 +216,126 @@ public sealed class MainForm : Form
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         root.Controls.Add(BuildHeader(), 0, 0);
-
-        var tabs = new TabControl { Dock = DockStyle.Fill };
-        tabs.TabPages.Add(Tab("Status", BuildStateTab()));
-        tabs.TabPages.Add(Tab("Effects", BuildEffectsTab()));
-        tabs.TabPages.Add(Tab("Manual test", BuildManualTab()));
-        tabs.TabPages.Add(Tab(
-            "Comfort calibration",
-            new PhysicalCalibrationControl(_coordinator)));
-        tabs.TabPages.Add(Tab(
-            "Controls",
-            new InputControlsControl(_coordinator)));
-        tabs.TabPages.Add(Tab("Profiles", BuildProfilesTab()));
-        tabs.TabPages.Add(Tab(
-            "Telemetry triggers",
-            new TriggerEditorControl(_coordinator)));
-        tabs.TabPages.Add(Tab("Collision tuning", BuildImpactTab()));
-        tabs.TabPages.Add(Tab("Vertical tuning", BuildVerticalTab()));
-        tabs.TabPages.Add(Tab("Incident tuning", BuildIncidentTab()));
-        tabs.TabPages.Add(Tab("Diagnostics", BuildDiagnosticsTab()));
-        tabs.TabPages.Add(Tab("Calibration & simulator", BuildCalibrationTab()));
-        tabs.TabPages.Add(Tab("Application", BuildApplicationTab()));
-        tabs.TabPages.Add(Tab("Logs", BuildLogsTab()));
-        root.Controls.Add(tabs, 0, 1);
+        root.Controls.Add(BuildBody(), 0, 1);
         root.Controls.Add(BuildFooter(), 0, 2);
         return root;
+    }
+
+    private Control BuildBody()
+    {
+        var body = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            RowCount = 1,
+            ColumnCount = 2,
+            Margin = Padding.Empty
+        };
+        body.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, NavWidth));
+        body.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        body.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+        _navList.Dock = DockStyle.Fill;
+        _navList.FlowDirection = FlowDirection.TopDown;
+        _navList.WrapContents = false;
+        _navList.AutoScroll = true;
+        _navList.BackColor = NavBackColor;
+        _navList.Padding = new Padding(0, 6, 0, 10);
+        _navList.Margin = new Padding(0, 0, 10, 0);
+
+        _pageHost.Dock = DockStyle.Fill;
+        _pageHost.BackColor = Color.White;
+        _pageHost.Padding = new Padding(8);
+        _pageHost.Margin = Padding.Empty;
+
+        AddNavGroup("Monitor");
+        AddNavPage("Status", BuildStateTab());
+        AddNavPage("Diagnostics", BuildDiagnosticsTab());
+        AddNavPage("Logs", BuildLogsTab());
+
+        AddNavGroup("Haptics");
+        AddNavPage("Effects", BuildEffectsTab());
+        AddNavPage("Manual test", BuildManualTab());
+        AddNavPage("Profiles", BuildProfilesTab());
+
+        AddNavGroup("Tuning");
+        AddNavPage("Collision tuning", BuildImpactTab());
+        AddNavPage("Vertical tuning", BuildVerticalTab());
+        AddNavPage("Incident tuning", BuildIncidentTab());
+        AddNavPage("Telemetry triggers", new TriggerEditorControl(_coordinator));
+
+        AddNavGroup("Calibration");
+        AddNavPage(
+            "Comfort calibration",
+            new PhysicalCalibrationControl(_coordinator));
+        AddNavPage("Calibration & simulator", BuildCalibrationTab());
+
+        AddNavGroup("Application");
+        AddNavPage("Controls", new InputControlsControl(_coordinator));
+        AddNavPage("Application", BuildApplicationTab());
+
+        body.Controls.Add(_navList, 0, 0);
+        body.Controls.Add(_pageHost, 1, 0);
+        SelectNavPage(_navButtons[0]);
+        _navList.AutoScrollPosition = Point.Empty;
+        return body;
+    }
+
+    private void AddNavGroup(string text)
+    {
+        _navList.Controls.Add(new Label
+        {
+            Text = text.ToUpperInvariant(),
+            AutoSize = false,
+            Width = NavItemWidth,
+            Height = 22,
+            TextAlign = ContentAlignment.BottomLeft,
+            Font = new Font("Segoe UI Semibold", 8f),
+            ForeColor = NavGroupForeColor,
+            Margin = new Padding(14, 8, 8, 2)
+        });
+    }
+
+    private void AddNavPage(string title, Control content)
+    {
+        content.Dock = DockStyle.Fill;
+        content.Visible = false;
+        _pageHost.Controls.Add(content);
+
+        var button = new Button
+        {
+            Text = title,
+            Tag = content,
+            Width = NavItemWidth,
+            Height = 29,
+            FlatStyle = FlatStyle.Flat,
+            TextAlign = ContentAlignment.MiddleLeft,
+            Padding = new Padding(12, 0, 0, 0),
+            Margin = new Padding(8, 1, 8, 1),
+            BackColor = NavBackColor,
+            ForeColor = NavItemForeColor,
+            UseVisualStyleBackColor = false,
+            UseMnemonic = false,
+            TabStop = false
+        };
+        button.FlatAppearance.BorderSize = 0;
+        button.FlatAppearance.MouseOverBackColor = NavHoverColor;
+        button.Click += (_, _) => SelectNavPage(button);
+        _navButtons.Add(button);
+        _navList.Controls.Add(button);
+    }
+
+    private void SelectNavPage(Button target)
+    {
+        foreach (var button in _navButtons)
+        {
+            var selected = ReferenceEquals(button, target);
+            button.BackColor = selected ? NavSelectedColor : NavBackColor;
+            button.ForeColor = selected ? Color.White : NavItemForeColor;
+            button.Font = selected
+                ? new Font("Segoe UI Semibold", 9.5f)
+                : new Font("Segoe UI", 9.5f);
+            ((Control)button.Tag!).Visible = selected;
+        }
     }
 
     private Control BuildHeader()
@@ -245,6 +371,8 @@ public sealed class MainForm : Form
             () => _coordinator.EmergencyStopAsync());
         panel.Controls.Add(text, 0, 0);
         panel.Controls.Add(stop, 1, 0);
+        _bannerText = text;
+        _stopButton = stop;
         return panel;
     }
 
@@ -2200,14 +2328,6 @@ public sealed class MainForm : Form
         var label = _stateValues[key];
         label.Text = "◐ " + unknownText;
         label.ForeColor = Color.FromArgb(150, 100, 15);
-    }
-
-    private static TabPage Tab(string text, Control content)
-    {
-        var tab = new TabPage(text) { Padding = new Padding(8), BackColor = Color.White };
-        content.Dock = DockStyle.Fill;
-        tab.Controls.Add(content);
-        return tab;
     }
 
     private static Panel ContentPanel() => new()
