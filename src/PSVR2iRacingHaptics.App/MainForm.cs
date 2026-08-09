@@ -152,7 +152,7 @@ public sealed class MainForm : Form
     public MainForm(AppCoordinator coordinator)
     {
         _coordinator = coordinator;
-        Text = $"PSVR2 iRacing Haptics {Application.ProductVersion}";
+        Text = $"Nishizumi PSVR2 iRacing Haptics {Application.ProductVersion}";
         MinimumSize = new Size(950, 700);
         Size = new Size(1160, 820);
         StartPosition = FormStartPosition.CenterScreen;
@@ -1182,7 +1182,7 @@ public sealed class MainForm : Form
     {
         var windowIcon = Icon ?? SystemIcons.Application;
         _notifyIcon.Icon = (System.Drawing.Icon)windowIcon.Clone();
-        _notifyIcon.Text = "PSVR2 iRacing Haptics";
+        _notifyIcon.Text = "Nishizumi PSVR2 iRacing Haptics";
         _notifyIcon.Visible = false;
         _notifyIcon.DoubleClick += (_, _) => ShowFromNotificationArea();
         var menu = new ContextMenuStrip();
@@ -1245,7 +1245,7 @@ public sealed class MainForm : Form
                     _notifyIcon.Visible = true;
                     _notifyIcon.ShowBalloonTip(
                         5000,
-                        "PSVR2 iRacing Haptics update",
+                        "Nishizumi PSVR2 iRacing Haptics update",
                         result.Message,
                         ToolTipIcon.Info);
                 }

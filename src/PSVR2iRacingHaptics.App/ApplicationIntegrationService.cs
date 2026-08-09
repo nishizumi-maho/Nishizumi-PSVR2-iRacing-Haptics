@@ -1,5 +1,7 @@
+using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.Win32;
 
@@ -12,14 +14,21 @@ public sealed record UpdateCheckResult(
     string ReleaseUrl,
     string Message);
 
+/// <summary>
+/// One official release asset: its file name, direct download URL and the
+/// matching ".sha256" sidecar URL published alongside it.
+/// </summary>
+public sealed record ReleaseAsset(string Name, string DownloadUrl, string ChecksumUrl);
+
 public static class ApplicationIntegrationService
 {
     private const string RunValueName = "PSVR2iRacingHaptics";
+    private const string AppExecutableName = "PSVR2iRacingHaptics.exe";
     private const string ReleasesPage =
-        "https://github.com/nishizumi-maho/PSVR2-iRacing-Haptics/releases";
+        "https://github.com/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics/releases";
     private const string LatestReleaseApi =
         "https://api.github.com/repos/nishizumi-maho/"
-        + "PSVR2-iRacing-Haptics/releases/latest";
+        + "Nishizumi-PSVR2-iRacing-Haptics/releases/latest";
     private static readonly HttpClient Http = CreateHttpClient();
 
     public static void SetStartWithWindows(bool enabled)
@@ -109,7 +118,7 @@ public static class ApplicationIntegrationService
             && uri.Scheme == Uri.UriSchemeHttps
             && string.Equals(uri.Host, "github.com", StringComparison.OrdinalIgnoreCase)
             && uri.AbsolutePath.StartsWith(
-                "/nishizumi-maho/PSVR2-iRacing-Haptics/releases/",
+                "/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics/releases/",
                 StringComparison.OrdinalIgnoreCase);
     }
 
@@ -136,7 +145,7 @@ public static class ApplicationIntegrationService
             Timeout = TimeSpan.FromSeconds(12)
         };
         client.DefaultRequestHeaders.UserAgent.Add(
-            new ProductInfoHeaderValue("PSVR2-iRacing-Haptics", version));
+            new ProductInfoHeaderValue("Nishizumi-PSVR2-iRacing-Haptics", version));
         client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
         client.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");

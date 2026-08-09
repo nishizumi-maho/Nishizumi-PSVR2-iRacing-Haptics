@@ -10,9 +10,9 @@
   #error OutputDir must be supplied by build-installer.ps1.
 #endif
 
-#define AppName "PSVR2 iRacing Haptics"
+#define AppName "Nishizumi PSVR2 iRacing Haptics"
 #define AppExeName "PSVR2iRacingHaptics.exe"
-#define ProjectUrl "https://github.com/nishizumi-maho/PSVR2-iRacing-Haptics"
+#define ProjectUrl "https://github.com/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics"
 
 [Setup]
 AppId={{B567B185-C843-49AB-9B1A-97E01BFD1212}
@@ -24,7 +24,7 @@ AppPublisherURL={#ProjectUrl}
 AppSupportURL={#ProjectUrl}/issues
 AppUpdatesURL={#ProjectUrl}/releases/latest
 VersionInfoVersion={#AppVersion}.0
-DefaultDirName={localappdata}\Programs\PSVR2 iRacing Haptics
+DefaultDirName={localappdata}\Programs\Nishizumi PSVR2 iRacing Haptics
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
@@ -32,7 +32,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 OutputDir={#OutputDir}
-OutputBaseFilename=PSVR2-iRacing-Haptics-v{#AppVersion}-win-x64-setup
+OutputBaseFilename=Nishizumi-PSVR2-iRacing-Haptics-v{#AppVersion}-win-x64-setup
 SetupIconFile=..\assets\app.ico
 UninstallDisplayIcon={app}\{#AppExeName}
 Compression=lzma2/max

@@ -107,7 +107,7 @@ public sealed class AppCoordinator : IAsyncDisposable
 
         _lifetime = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         _logger.Info(
-            $"PSVR2 iRacing Haptics v{Application.ProductVersion} started; "
+            $"Nishizumi PSVR2 iRacing Haptics v{Application.ProductVersion} started; "
             + $"data mode={(_paths.IsPortable ? "portable" : "LocalAppData")}.");
 
         await _toolkit.InitializeAsync(_lifetime.Token).ConfigureAwait(false);

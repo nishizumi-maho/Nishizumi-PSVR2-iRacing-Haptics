@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for improving PSVR2 iRacing Haptics. This project sits between
+Thank you for improving Nishizumi PSVR2 iRacing Haptics. This project sits between
 real-time simulator telemetry and physical hardware, so correctness and safe
 shutdown behavior take priority over feature count.
 

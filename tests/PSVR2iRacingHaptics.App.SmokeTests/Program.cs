@@ -99,17 +99,17 @@ internal static class Program
     {
         const string newerRelease = """
             {
-              "tag_name": "v1.2.0",
-              "html_url": "https://github.com/nishizumi-maho/PSVR2-iRacing-Haptics/releases/tag/v1.2.0"
+              "tag_name": "v2.1.0",
+              "html_url": "https://github.com/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics/releases/tag/v2.1.0"
             }
             """;
         var available = ApplicationIntegrationService.ParseLatestRelease(
             newerRelease,
-            "1.1.2+local-build");
+            "2.0.0+local-build");
         if (!available.UpdateAvailable
-            || available.LatestVersion != "1.2.0"
+            || available.LatestVersion != "2.1.0"
             || !available.ReleaseUrl.EndsWith(
-                "/releases/tag/v1.2.0",
+                "/releases/tag/v2.1.0",
                 StringComparison.Ordinal))
         {
             throw new InvalidOperationException(
@@ -118,16 +118,16 @@ internal static class Program
 
         const string currentReleaseWithUntrustedUrl = """
             {
-              "tag_name": "v1.1.2",
+              "tag_name": "v2.0.0",
               "html_url": "https://example.invalid/untrusted-download.exe"
             }
             """;
         var current = ApplicationIntegrationService.ParseLatestRelease(
             currentReleaseWithUntrustedUrl,
-            "1.1.2");
+            "2.0.0");
         if (current.UpdateAvailable
             || current.ReleaseUrl !=
-                "https://github.com/nishizumi-maho/PSVR2-iRacing-Haptics/releases/latest")
+                "https://github.com/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics/releases/latest")
         {
             throw new InvalidOperationException(
                 "The release check did not reject an untrusted release URL.");

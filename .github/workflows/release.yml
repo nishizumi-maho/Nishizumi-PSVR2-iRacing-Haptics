@@ -84,12 +84,12 @@ jobs:
         if: steps.existing.outputs.exists != 'True'
         uses: actions/upload-artifact@v7
         with:
-          name: PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-packages
+          name: Nishizumi-PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-packages
           path: |
-            build/PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-portable.zip
-            build/PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-portable.zip.sha256
-            build/installer/PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-setup.exe
-            build/installer/PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-setup.exe.sha256
+            build/Nishizumi-PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-portable.zip
+            build/Nishizumi-PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-portable.zip.sha256
+            build/installer/Nishizumi-PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-setup.exe
+            build/installer/Nishizumi-PSVR2-iRacing-Haptics-v${{ steps.version.outputs.version }}-win-x64-setup.exe.sha256
           if-no-files-found: error
           retention-days: 90
 
@@ -101,13 +101,13 @@ jobs:
           RELEASE_TAG: v${{ steps.version.outputs.version }}
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          $zip = "build/PSVR2-iRacing-Haptics-v$env:RELEASE_VERSION-win-x64-portable.zip"
+          $zip = "build/Nishizumi-PSVR2-iRacing-Haptics-v$env:RELEASE_VERSION-win-x64-portable.zip"
           $zipHash = "$zip.sha256"
-          $setup = "build/installer/PSVR2-iRacing-Haptics-v$env:RELEASE_VERSION-win-x64-setup.exe"
+          $setup = "build/installer/Nishizumi-PSVR2-iRacing-Haptics-v$env:RELEASE_VERSION-win-x64-setup.exe"
           $setupHash = "$setup.sha256"
           gh release create $env:RELEASE_TAG $zip $zipHash $setup $setupHash `
             --repo $env:GITHUB_REPOSITORY `
             --target $env:GITHUB_SHA `
-            --title "PSVR2 iRacing Haptics $env:RELEASE_VERSION" `
+            --title "Nishizumi PSVR2 iRacing Haptics $env:RELEASE_VERSION" `
             --generate-notes `
             --latest

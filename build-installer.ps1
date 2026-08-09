@@ -67,7 +67,7 @@ function Resolve-IsccPath {
 $iscc = Resolve-IsccPath $IsccPath
 $outputDirectory = Join-Path $root "build\installer"
 New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
-$setupName = "PSVR2-iRacing-Haptics-v$version-$Runtime-setup.exe"
+$setupName = "Nishizumi-PSVR2-iRacing-Haptics-v$version-$Runtime-setup.exe"
 $setupPath = Join-Path $outputDirectory $setupName
 $hashPath = "$setupPath.sha256"
 if (Test-Path -LiteralPath $setupPath) {
