@@ -13,9 +13,9 @@ Date: August 1, 2026.
   contributors and the release workflow.
 
 The v1.1.2 pull-request checkpoint is
-[workflow run 30713267519](https://github.com/nishizumi-maho/PSVR2-iRacing-Haptics/actions/runs/30713267519).
+[workflow run 30713267519](https://github.com/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics/actions/runs/30713267519).
 The authoritative current run is always available from the repository's
-[Validate and package workflow](https://github.com/nishizumi-maho/PSVR2-iRacing-Haptics/actions/workflows/ci.yml).
+[Validate and package workflow](https://github.com/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics/actions/workflows/ci.yml).
 
 ## Build
 

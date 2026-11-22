@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.0.1 — 2026-11-22
+
+- Fixed the profile selector reverting to the active profile (usually
+  **Default**) a moment after choosing another profile such as **Strong**.
+  Routine status refreshes reloaded the form whenever the selector differed
+  from the active profile, so a choice was discarded before **Apply profile**
+  could be clicked. The form now reloads only when the active profile itself
+  changes, for example through an automatic car/track rule.
+- Added a Windows smoke test that keeps a pending profile selection across
+  state refreshes and still follows externally applied profile changes.
+- Fixed diagnostic-bundle redaction for short Windows account names. The
+  account name was replaced as a plain substring after paths were redacted,
+  so an account named `user` corrupted `%USERPROFILE%` into
+  `%%USERNAME%PROFILE%` and mangled words such as `username`. The account name
+  is now replaced only as a standalone token, after profile paths.
+
 ## 1.1.2 — 2026-08-01
 
 - Added a per-user Inno Setup installer for Windows x64 alongside the existing

@@ -210,7 +210,7 @@ public sealed class GlobalInputService : IDisposable
         {
             CreateHandle(new CreateParams
             {
-                Caption = "PSVR2 iRacing Haptics global input"
+                Caption = "Nishizumi PSVR2 iRacing Haptics global input"
             });
         }
 

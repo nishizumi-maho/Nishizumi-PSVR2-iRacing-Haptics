@@ -163,7 +163,7 @@ public static class ProfilePackageService
                 StringComparison.Ordinal))
         {
             throw new InvalidDataException(
-                "The selected JSON is not a PSVR2 iRacing Haptics profile package.");
+                "The selected JSON is not a Nishizumi PSVR2 iRacing Haptics profile package.");
         }
         if (package.FormatVersion != ProfilePackage.CurrentFormatVersion)
         {

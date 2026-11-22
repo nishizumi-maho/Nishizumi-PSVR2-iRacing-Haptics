@@ -18,7 +18,7 @@ if ([string]::IsNullOrWhiteSpace($version)) {
     throw "The application version is missing from Directory.Build.props."
 }
 $publishDir = Join-Path $root "build\portable\PSVR2iRacingHaptics"
-$zipPath = Join-Path $root "build\PSVR2-iRacing-Haptics-v$version-$Runtime-portable.zip"
+$zipPath = Join-Path $root "build\Nishizumi-PSVR2-iRacing-Haptics-v$version-$Runtime-portable.zip"
 $hashPath = "$zipPath.sha256"
 
 $sdkVersion = dotnet --version

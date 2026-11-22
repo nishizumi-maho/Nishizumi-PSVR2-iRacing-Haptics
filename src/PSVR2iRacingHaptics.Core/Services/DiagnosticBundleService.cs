@@ -131,24 +131,35 @@ public static partial class DiagnosticBundleService
             size);
     }
 
-    public static string Redact(string value)
+    public static string Redact(string value) =>
+        Redact(
+            value,
+            Environment.UserName,
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+
+    public static string Redact(string value, string? userName, string? profile)
     {
-        var redacted = UserProfilePattern().Replace(value, "%USERPROFILE%");
-        var userName = Environment.UserName;
-        if (!string.IsNullOrWhiteSpace(userName))
-        {
-            redacted = redacted.Replace(
-                userName,
-                "%USERNAME%",
-                StringComparison.OrdinalIgnoreCase);
-        }
-        var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var redacted = value;
         if (!string.IsNullOrWhiteSpace(profile))
         {
             redacted = redacted.Replace(
                 profile,
                 "%USERPROFILE%",
                 StringComparison.OrdinalIgnoreCase);
+        }
+        redacted = UserProfilePattern().Replace(redacted, "%USERPROFILE%");
+        if (!string.IsNullOrWhiteSpace(userName))
+        {
+            // Replace the account name only as a standalone token. A plain
+            // substring replace corrupts the placeholders written above (an
+            // account named "user" turned %USERPROFILE% into
+            // %%USERNAME%PROFILE%) and mangles words such as "username".
+            redacted = Regex.Replace(
+                redacted,
+                $@"(?<![\w%]){Regex.Escape(userName.Trim())}(?![\w%])",
+                "%USERNAME%",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
+                TimeSpan.FromSeconds(1));
         }
         return redacted;
     }

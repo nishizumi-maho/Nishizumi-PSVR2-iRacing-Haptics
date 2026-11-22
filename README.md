@@ -1,7 +1,7 @@
-# PSVR2 iRacing Haptics
+# Nishizumi PSVR2 iRacing Haptics
 
-[![Validate and package](https://github.com/nishizumi-maho/PSVR2-iRacing-Haptics/actions/workflows/ci.yml/badge.svg)](https://github.com/nishizumi-maho/PSVR2-iRacing-Haptics/actions/workflows/ci.yml)
-[![Latest release](https://img.shields.io/github/v/release/nishizumi-maho/PSVR2-iRacing-Haptics)](https://github.com/nishizumi-maho/PSVR2-iRacing-Haptics/releases/latest)
+[![Validate and package](https://github.com/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics/actions/workflows/ci.yml/badge.svg)](https://github.com/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics)](https://github.com/nishizumi-maho/Nishizumi-PSVR2-iRacing-Haptics/releases/latest)
 
 An independent Windows companion app that converts iRacing telemetry into
 PlayStation VR2 headset rumble patterns through the
@@ -43,7 +43,7 @@ Both release formats are self-contained and do not require a separate .NET
 installation:
 
 - the Inno Setup installer installs for the current user under
-  `%LOCALAPPDATA%\Programs\PSVR2 iRacing Haptics`, creates a normal uninstaller
+  `%LOCALAPPDATA%\Programs\Nishizumi PSVR2 iRacing Haptics`, creates a normal uninstaller
   and stores settings, logs and recordings under
   `%LOCALAPPDATA%\PSVR2iRacingHaptics`;
 - the portable ZIP includes `portable.mode`, so settings, logs and recordings
@@ -63,7 +63,7 @@ provided `.sha256` sidecar before running it.
 2. Confirm that the Toolkit driver is active.
 3. Run the versioned `win-x64-setup.exe`, or extract the entire portable ZIP to
    a normal user folder.
-4. Start **PSVR2 iRacing Haptics** from the Start menu or run
+4. Start **Nishizumi PSVR2 iRacing Haptics** from the Start menu or run
    `PSVR2iRacingHaptics.exe` from the portable folder.
 5. Open **Comfort calibration**, select `PSVR2 Toolkit (real hardware)` on
    **Manual test**, and rate the guided steps as `Not felt`, `Clear` or
@@ -463,7 +463,7 @@ The script restores, builds, runs the test executable, publishes a
 self-contained `win-x64` app and creates:
 
 ```text
-build\PSVR2-iRacing-Haptics-v1.1.2-win-x64-portable.zip
+build\Nishizumi-PSVR2-iRacing-Haptics-v2.0.0-win-x64-portable.zip
 ```
 
 With Inno Setup 6.3 or later installed, build and smoke-test the per-user
@@ -476,7 +476,7 @@ installer:
 It creates:
 
 ```text
-build\installer\PSVR2-iRacing-Haptics-v1.1.2-win-x64-setup.exe
+build\installer\Nishizumi-PSVR2-iRacing-Haptics-v2.0.0-win-x64-setup.exe
 ```
 
 Run from source on Windows:

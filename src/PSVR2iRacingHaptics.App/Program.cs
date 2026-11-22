@@ -21,7 +21,7 @@ internal static class Program
                     "The application could not start.\n\n"
                     + "A diagnostic report was written to:\n"
                     + crashLog,
-                    "PSVR2 iRacing Haptics",
+                    "Nishizumi PSVR2 iRacing Haptics",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
@@ -61,7 +61,7 @@ internal static class Program
             await coordinator.EmergencyStopAsync("unhandled UI exception");
             MessageBox.Show(
                 "An unexpected error occurred. Rumble was stopped and the error was logged.",
-                "PSVR2 iRacing Haptics",
+                "Nishizumi PSVR2 iRacing Haptics",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         };
