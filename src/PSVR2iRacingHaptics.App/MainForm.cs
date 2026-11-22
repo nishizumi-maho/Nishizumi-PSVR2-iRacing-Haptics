@@ -159,6 +159,7 @@ public sealed class MainForm : Form
     private readonly DataGridView _rulesGrid = new();
     private string? _editingRuleId;
     private bool _loadingSettings;
+    private string _loadedActiveProfileId = string.Empty;
     private bool _allowClose;
     private bool _started;
 
@@ -1493,8 +1494,15 @@ public sealed class MainForm : Form
                 ? ""
                 : $" ({state.TelemetryContext.TrackName})");
         _profileSelectionStatus.Text = state.ProfileSelectionStatus;
+        // Reload only when the coordinator's active profile changed (for
+        // example through an automatic rule). Comparing against the combo
+        // selection would discard a profile the user picked but has not
+        // applied yet, because state refreshes arrive every few milliseconds.
         if (!_loadingSettings
-            && SelectedProfile(_profileCombo)?.Id != state.ActiveProfileId)
+            && !string.IsNullOrEmpty(state.ActiveProfileId)
+            && !state.ActiveProfileId.Equals(
+                _loadedActiveProfileId,
+                StringComparison.OrdinalIgnoreCase))
         {
             LoadSettings(_coordinator.Settings);
         }
@@ -1552,6 +1560,7 @@ public sealed class MainForm : Form
         _loadingSettings = true;
         try
         {
+            _loadedActiveProfileId = settings.ActiveProfileId;
             RefreshProfileControls(settings);
             _autoProfileSelection.Checked = settings.AutoProfileSelectionEnabled;
             _rumbleModeCombo.SelectedIndex = settings.UseSimulatedRumbleDevice ? 1 : 0;

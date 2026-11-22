@@ -86,6 +86,7 @@ internal static class Program
         ("Physical calibration does not invent a comfortable range", PhysicalCalibrationNoRange),
         ("Physical calibration requires a clear duration", PhysicalCalibrationNeedsDuration),
         ("Diagnostic redaction removes Windows user paths", DiagnosticRedactionWorks),
+        ("Diagnostic redaction keeps placeholders for short account names", DiagnosticRedactionShortUserName),
         ("Diagnostic bundle contains only reviewed support data", DiagnosticBundleWorks),
         ("Input defaults contain every action exactly once", InputDefaultsAreComplete),
         ("Missing Toolkit DLL does not crash", MissingToolkitDoesNotCrash),
@@ -1769,6 +1770,23 @@ internal static class Program
         True(redacted.Contains(
             @"C:\Program Files\Steam",
             StringComparison.Ordinal));
+        return Task.CompletedTask;
+    }
+
+    private static Task DiagnosticRedactionShortUserName()
+    {
+        var input =
+            @"DLL=C:\Users\user\Toolkit\psvr2_toolkit_capi.dll" + "\n"
+            + "Owner=user; field=username; note=User-created profile";
+        var redacted = DiagnosticBundleService.Redact(
+            input,
+            "user",
+            @"C:\Users\user");
+        True(redacted.Contains(@"%USERPROFILE%\Toolkit", StringComparison.Ordinal));
+        False(redacted.Contains("%%", StringComparison.Ordinal));
+        True(redacted.Contains("Owner=%USERNAME%;", StringComparison.Ordinal));
+        True(redacted.Contains("field=username;", StringComparison.Ordinal));
+        False(redacted.Contains(@"C:\Users\user", StringComparison.OrdinalIgnoreCase));
         return Task.CompletedTask;
     }
 
